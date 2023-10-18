@@ -1,5 +1,6 @@
 package com.wmy.security.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wmy.common.jwt.JwtHelper;
 import com.wmy.common.result.Result;
@@ -7,6 +8,7 @@ import com.wmy.common.result.ResultCodeEnum;
 import com.wmy.security.custom.CustomUser;
 import com.wmy.vo.system.LoginVo;
 import com.wmy.common.result.ResponseUtil;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,12 +26,15 @@ import java.util.Map;
 
 public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    public TokenLoginFilter(AuthenticationManager authenticationManager) {
+    private RedisTemplate redisTemplate;
+
+    public TokenLoginFilter(AuthenticationManager authenticationManager, RedisTemplate redisTemplate) {
         this.setAuthenticationManager(authenticationManager);
         this.setPostOnly(false);
         //指定登录接口及提交方式，可以指定任意路径
         this.setRequiresAuthenticationRequestMatcher(
                 new AntPathRequestMatcher("/admin/system/index/login","POST"));
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -55,8 +60,14 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
      */
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
+        //获取当前用户
         CustomUser customUser = (CustomUser) auth.getPrincipal();
+        //生成token
         String token = JwtHelper.createToken(customUser.getSysUser().getId(), customUser.getSysUser().getUsername());
+
+        //获取当前用户权限数据，方法Redis里 key:username,value:权限数据
+        redisTemplate.opsForValue().set(customUser.getUsername(),
+                JSON.toJSONString(customUser.getAuthorities()));
 
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
