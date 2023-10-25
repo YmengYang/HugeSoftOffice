@@ -5,7 +5,11 @@ import com.wmy.model.system.SysUser;
 import com.wmy.auth.mapper.SysUserMapper;
 import com.wmy.auth.service.SysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wmy.security.custom.LoginUserInfoHelper;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,5 +38,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public SysUser getByUsername(String username) {
         return this.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
+    }
+
+    @Override
+    public Map<String, Object> getCurrentUser() {
+        SysUser sysUser = baseMapper.selectById(LoginUserInfoHelper.getUserId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", sysUser.getName());
+        map.put("phone", sysUser.getPhone());
+        return map;
     }
 }
