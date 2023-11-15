@@ -56,7 +56,7 @@ public class MessageServiceImpl implements MessageService {
         String openId = sysUser.getOpenId();
         if (StringUtils.isEmpty(openId)) {
             //TODO 为了测试，这里设置开发者自己的openId作为默认值
-            openId = "oaQh26v1lGLgxOGAxSw_jK7QUWyI";
+            openId = "your openId";
         }
         //设置消息发送信息
         WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder().toUser(openId)
