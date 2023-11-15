@@ -52,7 +52,7 @@ public class JwtHelper {
     }
 
     public static void main(String[] args) {
-        String token = JwtHelper.createToken(1L, "admin");
+        String token = JwtHelper.createToken(4L, "lisi");
         System.out.println(token);
         System.out.println(JwtHelper.getUserId(token));
         System.out.println(JwtHelper.getUsername(token));

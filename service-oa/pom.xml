@@ -46,6 +46,30 @@
             <artifactId>velocity-engine-core</artifactId>
             <version>2.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.wmy</groupId>
+            <artifactId>spring-security</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter</artifactId>
+            <version>7.1.0.M6</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>mybatis</artifactId>
+                    <groupId>org.mybatis</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>4.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -57,5 +81,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

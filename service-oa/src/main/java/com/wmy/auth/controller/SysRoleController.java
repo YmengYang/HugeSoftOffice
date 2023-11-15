@@ -10,6 +10,7 @@ import com.wmy.common.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class SysRoleController {
      * 查询所有角色
      * @return
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     @ApiOperation(value = "获取所有角色列表")
     @GetMapping("/findAll")
     public Result findAll() { //统一返回数据结果
@@ -40,6 +42,7 @@ public class SysRoleController {
     /**
      * 条件分页查询
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     @ApiOperation(value = "条件分页查询")
     @GetMapping("{page}/{limit}")
     public Result pageQueryRole(@PathVariable Long page,
@@ -64,6 +67,7 @@ public class SysRoleController {
     /**
      * 添加角色
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.add')")
     @ApiOperation("添加角色")
     @PostMapping("/save")
     public Result save(@RequestBody SysRole role) { //用json格式提交数据
@@ -78,6 +82,7 @@ public class SysRoleController {
     /**
      * 修改角色- 1.根据id查询
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     @ApiOperation("根据id查询")
     @GetMapping("/get/{id}")
     public Result getById(@PathVariable Long id) {
@@ -88,6 +93,7 @@ public class SysRoleController {
     /**
      * 修改角色- 2.最终修改
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.update')")
     @ApiOperation("修改角色")
     @PostMapping("/update")
     public Result updateById(@RequestBody SysRole role) { //用json格式提交数据
@@ -102,6 +108,7 @@ public class SysRoleController {
     /**
      * 根据id删除
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @ApiOperation("根据id删除")
     @DeleteMapping("/remove/{id}")
     public Result removeById(@PathVariable Long id) {
@@ -116,6 +123,7 @@ public class SysRoleController {
     /**
      * 根据id批量删除
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @ApiOperation(value = "根据id列表删除")
     @DeleteMapping("/batchRemove")
     public Result batchRemove(@RequestBody List<Long> idList) { //java中的list集合接收json数组格式,将id以数组格式在前端传递
