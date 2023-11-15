@@ -12,6 +12,7 @@ import com.wmy.model.process.ProcessRecord;
 import com.wmy.model.process.ProcessTemplate;
 import com.wmy.model.system.SysUser;
 import com.wmy.process.mapper.ProcessMapper;
+import com.wmy.process.service.MessageService;
 import com.wmy.process.service.ProcessRecordService;
 import com.wmy.process.service.ProcessService;
 import com.wmy.process.service.ProcessTemplateService;
@@ -68,6 +69,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     private ProcessRecordService processRecordService;
     @Autowired
     private HistoryService historyService;
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 审批管理列表
@@ -142,6 +145,7 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
             String name = user.getName();
             nameList.add(name);
             //6 给审批人推送消息
+            messageService.pushPendingMessage(process.getId(), user.getId(), task.getId());
 
         }
         process.setProcessInstanceId(processInstance.getId());
@@ -283,6 +287,9 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
             for (Task task : taskList) {
                 SysUser sysUser = sysUserService.getByUsername(task.getAssignee());
                 assignList.add(sysUser.getName());
+
+                //推送消息给下一个审批人
+                messageService.pushPendingMessage(process.getId(), sysUser.getId(), task.getId());
             }
             process.setDescription("等待" + StringUtils.join(assignList.toArray(), ",") + "审批");
             process.setStatus(1);
